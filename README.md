@@ -3,7 +3,7 @@ book - server side and client side
 
 
 
-###Server-side vs Client-side
+#### Server-side vs Client-side
 The first big thing to understand about this is that there are now 2 places where the URL is interpreted, whereas there used to be only 1 in 'the old days'. In the past, when life was simple, some user sent a request for http://example.com/about to the server, which inspected the path part of the URL, determined the user was requesting the about page, and then sent back that page.
 
 With client-side routing, which is what React Router provides, things are less simple. At first, the client does not have any JavaScript code loaded yet. So the very first request will always be to the server. That will then return a page that contains the needed script tags to load React and React Router, etc. Only when those scripts have loaded does phase 2 start. In phase 2, when the user clicks on the 'About us' navigation link, for example, the URL is changed locally only to http://example.com/about (made possible by the History API), but <b>no request to the server is made</b>. Instead, React Router does its thing on the client-side, determines which React view to render, and renders it. Assuming your about page does not need to make any REST calls, it's done already. You have transitioned from Home to About Us without any server request having fired.
@@ -14,50 +14,50 @@ But now consider what happens if you copy-paste the URL in the address bar and e
 
 And this is where your trouble starts. Until now, you could get away with just placing a static HTML at the webroot of your server. But that would give 404 errors for all other URLs when requested from the server. Those same URLs work fine on the client-side, because there React Router is doing the routing for you, but they fail on the server-side unless you make your server understand them.
 
-###Combining server- and client-side routing
+#### Combining server- and client-side routing
 If you want the http://example.com/about URL to work on both the server- and the client-side, you need to set up routes for it on both the server- and the client-side. It makes sense, right?
 
 And this is where your choices begin. Solutions range from bypassing the problem altogether, via a catch-all route that returns the bootstrap HTML, to the full-on isomorphic approach where both the server and the client run the same JavaScript code.
 
-###Bypassing the problem altogether: Hash History
+#### Bypassing the problem altogether: Hash History
 With Hash History, instead of Browser History, your URL for the about page would look something like this: http://example.com/#/about
 
 The part after the hash (#) symbol is not sent to the server. So the server only sees http://example.com/ and sends the index page as expected. React Router will pick up the #/about part and show the correct page.
 
-#####Downsides:
+##### Downsides:
 
 - 'ugly' URLs
 - Server-side rendering is not possible with this approach. As far as search engine optimization (SEO) is concerned, your website consists of a single page with hardly any content on it.
 
-###Catch-all
+#### Catch-all
 With this approach, you do use the Browser History, but just set up a catch-all on the server that sends /* to index.html, effectively giving you much the same situation as with Hash History. You do have clean URLs however and you could improve upon this scheme later without having to invalidate all your user's favorites.
 
-#####Downsides:
+###### Downsides:
 
 - More complex to set up
 - Still no good SEO
 
-###Hybrid
+#### Hybrid
 
 In the hybrid approach, you expand upon the catch-all scenario by adding specific scripts for specific routes. You could make some simple PHP scripts to return the most important pages of your site with content included, so Googlebot can at least see what's on your page.
 
-#####Downsides:
+###### Downsides:
 
 - Even more complex to set up
 - Only good SEO for those routes you give the special treatment
 - Duplicating code for rendering content on server and client
 
-###Isomorphic
+#### Isomorphic
 
 What if we use Node.js as our server so we can run the same JavaScript code on both ends? Now, we have all our routes defined in a single react-router configuration and we don't need to duplicate our rendering code. This is 'the holy grail' so to speak. The server sends the exact same markup as we would end up with if the page transition had happened on the client. This solution is optimal in terms of SEO.
 
-#####Downsides:
+##### Downsides:
 
 - Server must (be able to) run JavaScript. I've experimented with Java in conjunction with Nashorn, but it's not working for me. In practice, it mostly means you must use a Node.js based server.
 - Many tricky environmental issues (using window on server-side, etc.)
 - Steep learning curve
 
-###Which should I use?
+#### Which should I use?
 
 Choose the one that you can get away with. Personally, I think the catch-all is simple enough to set up, so that would be my minimum. This setup allows you to improve on things over time. If you are already using Node.js as your server platform, I'd definitely investigate doing an isomorphic app. Yes, it's tough at first, but once you get the hang of it it's actually a very elegant solution to the problem.
 

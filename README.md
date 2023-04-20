@@ -87,4 +87,4 @@ Currently, I am using a homebrewed version of universal rendering that was inspi
 Good luck with your quest!
 
 --
-from : https://stackoverflow.com/questions/27928372/react-router-urls-dont-work-when-refreshing-or-writing-manually
+from : [this](https://stackoverflow.com/questions/27928372/react-router-urls-dont-work-when-refreshing-or-writing-manually)
